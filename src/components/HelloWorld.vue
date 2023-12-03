@@ -2,12 +2,12 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <p>
-      For a guide and recipes on how to configure / customize this project,<br />
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-        >vue-cli documentation</a
-      >.
+      This App was developed to determine the best clothes for each day<br />
+      You have to insert your personal preferences for cold/hot weather <br />
+      Set your Location and afterwards you are ready to go <br />
+      The App will determine the best clothes for the current weather <br />
     </p>
+    <button type="button" class="btn btn-primary">Primary</button>
     <h3>Installed CLI Plugins</h3>
     <ul>
       <li>
