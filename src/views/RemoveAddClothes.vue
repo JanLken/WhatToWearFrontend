@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="center-container">
     <form @submit.prevent="addClothes">
       <input v-model="newClothes.category" placeholder="Category" />
       <input
@@ -16,6 +16,7 @@
       <button type="submit">Add Clothes</button>
     </form>
 
+    <p v-if="feedback">{{ feedback }}</p>
     <!-- Additional UI elements for deleting clothes can be added here -->
   </div>
 </template>
@@ -32,6 +33,7 @@ export default {
         maxTemp: 0,
         pathPic: "",
       },
+      feedback: "", // Feedback message
     };
   },
   methods: {
@@ -39,29 +41,27 @@ export default {
       axios
         .post("http://localhost:8080/clothes", this.newClothes)
         .then((response) => {
-          console.log(response);
-          // Handle success (e.g., clear form, show message)
+          this.feedback = "Clothes added successfully!";
+          this.resetForm(); // Reset the form after successful addition
         })
         .catch((error) => {
           console.error(error);
-          // Handle error
+          this.feedback = "Failed to add Clothes.";
         });
     },
-    deleteClothes(id) {
-      axios
-        .delete(`http://localhost:8080/clothes/${id}`)
-        .then((response) => {
-          console.log(response);
-          // Handle success (e.g., update UI)
-        })
-        .catch((error) => {
-          console.error(error);
-          // Handle error
-        });
+    resetForm() {
+      this.newClothes = { category: "", minTemp: 0, maxTemp: 0, pathPic: "" };
     },
   },
 };
 </script>
 
-export default { // eslint-disable-next-line vue/multi-word-component-names
-name: "Remove or Add Clothes", };
+<style>
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 10vh; /* This makes sure it takes at least the full height of the viewport */
+}
+</style>
