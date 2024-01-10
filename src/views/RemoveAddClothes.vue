@@ -100,6 +100,16 @@ export default {
         this.isError = true;
         return false;
       }
+
+      // Check if maxTemp is smaller than minTemp
+      if (this.newClothes.maxTemp < this.newClothes.minTemp) {
+        this.feedback =
+          "Maximum temperature for the added clothing is smaller than the minimum temperature.";
+        this.isError = true;
+        return false;
+      }
+
+      // If all validations pass
       return true;
     },
     resetForm() {
