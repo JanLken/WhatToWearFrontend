@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1 class="text-center">Clothes List</h1>
-    <table class="table table-stried">
+    <table class="table table-striped">
       <thead>
         <th>Clothes ID</th>
         <th>Clothes Category</th>

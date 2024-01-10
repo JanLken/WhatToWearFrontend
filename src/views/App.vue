@@ -1,30 +1,22 @@
 <template>
   <div id="app">
-    <Clothes />
+    <router-view></router-view>
+    <!-- This will render the component based on the route -->
   </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-//import HelloWorld from "../components/HelloWorld.vue";
-import Clothes from "../components/Clothes.vue";
 
+// You no longer need to import these components here, as the router will handle their rendering
 @Options({
   components: {
-    // HelloWorld
-    Clothes,
+    // Your components are now handled by the router
   },
 })
 export default class App extends Vue {}
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+/* Your existing styles */
 </style>
