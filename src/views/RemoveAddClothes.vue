@@ -1,7 +1,18 @@
 <template>
+  <div>
+    <button @click="goToMenu" class="back-button">Back to Menu</button>
+  </div>
   <div class="center-container">
     <form @submit.prevent="addClothes">
-      <input v-model="newClothes.category" placeholder="Category" />
+      <select v-model="newClothes.category">
+        <option disabled value="">Select Category</option>
+        <option>Jacket</option>
+        <option>T-Shirt</option>
+        <option>Long sleeve shirt</option>
+        <option>Pants</option>
+        <option>Shorts</option>
+        <option>Shoes</option>
+      </select>
       <input
         v-model.number="newClothes.minTemp"
         placeholder="Min Temp"
@@ -12,7 +23,6 @@
         placeholder="Max Temp"
         type="number"
       />
-      <input v-model="newClothes.pathPic" placeholder="Path Pic" />
       <button type="submit">Add Clothes</button>
     </form>
 
@@ -73,6 +83,9 @@ export default {
     };
   },
   methods: {
+    goToMenu() {
+      this.$router.push("/");
+    },
     addClothes() {
       if (this.validateInput()) {
         axios

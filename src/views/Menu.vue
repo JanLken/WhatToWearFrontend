@@ -1,8 +1,9 @@
 <template>
   <div class="menu-container">
     <button @click="navigateTo('/what-can-i-wear')">What can I wear?</button>
-    <button @click="navigateTo('/clothes')">Clothes</button>
-    <button @click="navigateTo('/RemoveAddClothes')">RemoveAddClothes</button>
+    <button @click="navigateTo('/RemoveAddClothes')">
+      Remove or add new Clothes
+    </button>
     <button @click="navigateTo('/settings')">Settings</button>
     <button @click="navigateTo('/logout')">Logout</button>
   </div>
