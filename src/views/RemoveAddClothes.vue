@@ -2,6 +2,7 @@
   <div>
     <button @click="goToMenu" class="back-button">Back to Menu</button>
   </div>
+  <h1 class="center-container">Here you can change your Closet</h1>
   <div class="center-container">
     <form @submit.prevent="addClothes">
       <select v-model="newClothes.category">
@@ -38,16 +39,40 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>Clothes ID</th>
-            <th>Clothes Category</th>
-            <th>Min Temp</th>
-            <th>Max Temp</th>
-            <th>Description</th>
+            <th>Clothes ID<button @click="sort('id')">Sort by ID</button></th>
+            <th>
+              Clothes Category
+              <select
+                v-model="categoryFilter"
+                @change="resetFilters('category')"
+              >
+                <option value="">All Categories</option>
+                <option value="Jacket">Jacket</option>
+                <option value="T-Shirt">T-Shirt</option>
+                <option value="Long sleeve shirt">Long sleeve shirt</option>
+                <option value="Pants">Pants</option>
+                <option value="Shorts">Shorts</option>
+                <option value="Shoes">Shoes</option>
+              </select>
+            </th>
+            <th>
+              Min Temp<button @click="sort('minTemp')">Sort by Min Temp</button>
+            </th>
+            <th>
+              Max Temp<button @click="sort('maxTemp')">Sort by Max Temp</button>
+            </th>
+            <th>
+              Description
+              <input
+                v-model="descriptionFilter"
+                placeholder="Filter by Description"
+              />
+            </th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="clothes in savedClothes" :key="clothes.id">
+          <tr v-for="clothes in filteredClothes" :key="clothes.id">
             <td>{{ clothes.id }}</td>
             <td>{{ clothes.category }}</td>
             <td>{{ clothes.minTemp }}</td>
@@ -89,6 +114,10 @@ export default {
         maxTemp: null,
         description: "",
       },
+      sortKey: "id",
+      sortOrder: 1, // 1 for ascending, -1 for descending
+      categoryFilter: "",
+      descriptionFilter: "",
       editableClothes: null,
       savedClothes: [], // Array to store the list of saved Clothes
       selectedClothesId: null, // ID of the Clothes selected for removal
@@ -99,6 +128,15 @@ export default {
     };
   },
   methods: {
+    sort(key) {
+      if (this.sortKey === key) {
+        // Toggle sort order
+        this.sortOrder *= -1;
+      } else {
+        this.sortKey = key;
+        this.sortOrder = 1; // Default to ascending
+      }
+    },
     goToMenu() {
       this.$router.push("/");
     },
@@ -219,10 +257,56 @@ export default {
       this.selectedClothesId = null;
       this.showDeletePopup = false;
     },
+    resetFilters(changedFilter) {
+      if (changedFilter !== "category") {
+        this.categoryFilter = "";
+      }
+      if (changedFilter !== "description") {
+        this.descriptionFilter = "";
+      }
+      if (changedFilter !== "minTemp") {
+        this.descriptionFilter = "";
+      }
+      if (changedFilter !== "maxTemp") {
+        this.descriptionFilter = "";
+      }
+      if (changedFilter !== "id") {
+        this.descriptionFilter = "";
+      }
+    },
   },
   mounted() {
     this.fetchSavedClothes(); // Fetch saved Clothes on component mount
     console.log("Mounted!");
+  },
+  computed: {
+    filteredClothes() {
+      let result = this.savedClothes;
+
+      if (this.categoryFilter) {
+        result = result.filter((item) => item.category === this.categoryFilter);
+      }
+
+      if (this.descriptionFilter) {
+        result = result.filter((item) =>
+          item.description
+            .toLowerCase()
+            .includes(this.descriptionFilter.toLowerCase())
+        );
+      }
+
+      // Sort the result
+      result.sort((a, b) => {
+        let compareA = a[this.sortKey];
+        let compareB = b[this.sortKey];
+
+        if (compareA < compareB) return -1 * this.sortOrder;
+        if (compareA > compareB) return 1 * this.sortOrder;
+        return 0;
+      });
+
+      return result;
+    },
   },
 };
 </script>
