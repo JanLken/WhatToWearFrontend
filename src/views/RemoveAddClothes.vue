@@ -14,6 +14,11 @@
         <option>Shoes</option>
       </select>
       <input
+        v-model="newClothes.description"
+        placeholder="Description"
+        type="text"
+      />
+      <input
         v-model.number="newClothes.minTemp"
         placeholder="Min Temp"
         type="number"
@@ -37,6 +42,7 @@
             <th>Clothes Category</th>
             <th>Min Temp</th>
             <th>Max Temp</th>
+            <th>Description</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -46,6 +52,7 @@
             <td>{{ clothes.category }}</td>
             <td>{{ clothes.minTemp }}</td>
             <td>{{ clothes.maxTemp }}</td>
+            <td>{{ clothes.description }}</td>
             <td>
               <button @click="confirmRemoval(clothes.id)">Remove</button>
             </td>
@@ -73,7 +80,7 @@ export default {
         category: "",
         minTemp: null,
         maxTemp: null,
-        pathPic: "",
+        description: "",
       },
       savedClothes: [], // Array to store the list of saved Clothes
       selectedClothesId: null, // ID of the Clothes selected for removal
@@ -93,6 +100,7 @@ export default {
           .then((response) => {
             this.feedback = "Clothes added successfully!";
             this.isError = false;
+            this.savedClothes.push(response.data);
             this.resetForm();
           })
           .catch((error) => {
@@ -106,8 +114,7 @@ export default {
       if (
         !this.newClothes.category ||
         this.newClothes.minTemp === null ||
-        this.newClothes.maxTemp === null ||
-        !this.newClothes.pathPic
+        this.newClothes.maxTemp === null
       ) {
         this.feedback = "Please fill in all fields.";
         this.isError = true;
@@ -130,7 +137,7 @@ export default {
         category: "",
         minTemp: null,
         maxTemp: null,
-        pathPic: "",
+        description: "",
       };
       // Check if maxTemp is smaller than minTemp
       if (this.newClothes.maxTemp < this.newClothes.minTemp) {

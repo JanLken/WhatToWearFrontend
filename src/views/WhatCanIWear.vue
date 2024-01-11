@@ -12,7 +12,7 @@
     <p v-if="showError" class="error">
       Please enter the Degrees before generating an Outfit
     </p>
-
+    <p>{{ feedback }}</p>
     <div v-if="randomOutfit.length" class="outfit-table">
       <h2>Your Random Outfit:</h2>
       <table>
@@ -63,10 +63,11 @@ export default {
         return;
       }
       this.showError = false;
+
       const categories = [
         ...new Set(this.clothes.map((item) => item.category)),
       ];
-      this.randomOutfit = categories
+      const filteredClothes = categories
         .map((category) => {
           const items = this.clothes.filter(
             (item) =>
@@ -79,6 +80,15 @@ export default {
             : null;
         })
         .filter((item) => item !== null);
+
+      if (filteredClothes.length === 0) {
+        this.feedback =
+          "You don't have any clothing that supports this kind of weather";
+        this.randomOutfit = [];
+      } else {
+        this.feedback = "";
+        this.randomOutfit = filteredClothes;
+      }
     },
   },
   mounted() {
