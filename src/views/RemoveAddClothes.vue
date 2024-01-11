@@ -143,7 +143,10 @@ export default {
     addClothes() {
       if (this.validateInput()) {
         axios
-          .post("https://whattowear-backend.onrender.com/clothes", this.newClothes)
+          .post(
+            "https://whattowear-backend.onrender.com/clothes",
+            this.newClothes
+          )
           .then((response) => {
             this.feedback = "Clothes added successfully!";
             this.isError = false;
@@ -212,7 +215,9 @@ export default {
     },
     deleteClothes() {
       axios
-        .delete(`https://whattowear-backend.onrender.com/clothes/${this.selectedClothesId}`)
+        .delete(
+          `https://whattowear-backend.onrender.com/clothes/${this.selectedClothesId}`
+        )
         .then(() => {
           this.fetchSavedClothes(); // Refresh the list
           this.showDeletePopup = false;
