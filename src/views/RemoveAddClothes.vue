@@ -56,16 +56,23 @@
             <td>
               <button @click="confirmRemoval(clothes.id)">Remove</button>
             </td>
+            <td>
+              <button @click="editClothes(clothes)">Edit</button>
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
-
     <!-- Confirmation Popup -->
-    <div v-if="showConfirmPopup" class="popup">
+    <div v-if="showDeletePopup" class="popup">
       <p>Are you sure you want to delete this clothing item?</p>
       <button @click="deleteClothes">Delete</button>
       <button @click="cancelDeletion">Cancel</button>
+    </div>
+    <div v-if="showEditPopup" class="popup">
+      <input type="text" v-model="editableClothes.description" />
+      <button @click="saveDescription">Save</button>
+      <button @click="cancelEdit">Cancel</button>
     </div>
   </div>
 </template>
@@ -82,9 +89,11 @@ export default {
         maxTemp: null,
         description: "",
       },
+      editableClothes: null,
       savedClothes: [], // Array to store the list of saved Clothes
       selectedClothesId: null, // ID of the Clothes selected for removal
-      showConfirmPopup: false, // Controls the display of the confirmation popup
+      showDeletePopup: false, // Controls the display of the confirmation popup
+      showEditPopup: false,
       feedback: "",
       isError: false,
     };
@@ -128,7 +137,6 @@ export default {
         this.isError = true;
         return false;
       }
-
       // If all validations pass
       return true;
     },
@@ -155,33 +163,66 @@ export default {
           this.savedClothes = response.data;
         })
         .catch((error) => {
-          console.error(error);
+          console.error("Error fetching clothes:", error);
           // Handle error
         });
     },
     confirmRemoval(id) {
       this.selectedClothesId = id;
-      this.showConfirmPopup = true;
+      this.showDeletePopup = true;
+      this.showEditPopup = false;
     },
     deleteClothes() {
       axios
         .delete(`http://localhost:8080/clothes/${this.selectedClothesId}`)
         .then(() => {
           this.fetchSavedClothes(); // Refresh the list
-          this.showConfirmPopup = false;
+          this.showDeletePopup = false;
         })
         .catch((error) => {
           console.error(error);
           // Handle error
         });
     },
+    editClothes(clothes) {
+      this.editableClothes = JSON.parse(JSON.stringify(clothes));
+      this.showEditPopup = true;
+      this.showDeletePopup = false;
+    },
+    saveDescription() {
+      axios
+        .put(
+          `http://localhost:8080/clothes/${this.editableClothes.id}`,
+          this.editableClothes
+        )
+        .then((response) => {
+          // Find the index of the updated item in the savedClothes array
+          const index = this.savedClothes.findIndex(
+            (c) => c.id === this.editableClothes.id
+          );
+          if (index !== -1) {
+            // Replace the old item data with the new data
+            this.savedClothes.splice(index, 1, response.data);
+          }
+          this.showEditPopup = false;
+        })
+        .catch((error) => {
+          console.error("Error updating clothes:", error);
+          // Handle error (possibly update feedback to show to the user)
+        });
+    },
+    cancelEdit() {
+      this.showEditPopup = false;
+      this.editableClothes = null;
+    },
     cancelDeletion() {
       this.selectedClothesId = null;
-      this.showConfirmPopup = false;
+      this.showDeletePopup = false;
     },
   },
   mounted() {
     this.fetchSavedClothes(); // Fetch saved Clothes on component mount
+    console.log("Mounted!");
   },
 };
 </script>
