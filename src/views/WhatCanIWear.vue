@@ -1,4 +1,7 @@
 <template>
+  <div>
+    <button @click="goToMenu" class="back-button">Back to Menu</button>
+  </div>
   <div class="container">
     <h1>What Can I Wear?</h1>
     <input
@@ -47,9 +50,12 @@ export default {
     };
   },
   methods: {
+    goToMenu() {
+      this.$router.push("/");
+    },
     fetchClothes() {
       axios
-        .get("http://localhost:8080/clothes")
+        .get("https://whattowear-backend.onrender.com/clothes")
         .then((response) => {
           this.clothes = response.data;
         })

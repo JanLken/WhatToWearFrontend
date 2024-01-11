@@ -143,7 +143,7 @@ export default {
     addClothes() {
       if (this.validateInput()) {
         axios
-          .post("http://localhost:8080/clothes", this.newClothes)
+          .post("https://whattowear-backend.onrender.com/clothes", this.newClothes)
           .then((response) => {
             this.feedback = "Clothes added successfully!";
             this.isError = false;
@@ -196,7 +196,7 @@ export default {
     },
     fetchSavedClothes() {
       axios
-        .get("http://localhost:8080/clothes")
+        .get("https://whattowear-backend.onrender.com/clothes")
         .then((response) => {
           this.savedClothes = response.data;
         })
@@ -212,7 +212,7 @@ export default {
     },
     deleteClothes() {
       axios
-        .delete(`http://localhost:8080/clothes/${this.selectedClothesId}`)
+        .delete(`https://whattowear-backend.onrender.com/clothes/${this.selectedClothesId}`)
         .then(() => {
           this.fetchSavedClothes(); // Refresh the list
           this.showDeletePopup = false;
@@ -230,7 +230,7 @@ export default {
     saveDescription() {
       axios
         .put(
-          `http://localhost:8080/clothes/${this.editableClothes.id}`,
+          `https://whattowear-backend.onrender.com/clothes/${this.editableClothes.id}`,
           this.editableClothes
         )
         .then((response) => {

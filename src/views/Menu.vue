@@ -1,4 +1,5 @@
 <template>
+  <h1 class="center-container">~What To Wear~</h1>
   <div class="menu-container">
     <button @click="navigateTo('/what-can-i-wear')">What can I wear?</button>
     <button @click="navigateTo('/RemoveAddClothes')">
@@ -13,6 +14,11 @@
 import { useRouter } from "vue-router";
 
 export default {
+  methods: {
+    goToMenu() {
+      this.$router.push("/");
+    },
+  },
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Menu",
   setup() {
