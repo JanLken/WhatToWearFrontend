@@ -56,7 +56,7 @@ export default {
         this.feedback = "Please enter a city name.";
         return;
       }
-      const url = `http://api.weatherapi.com/v1/current.json?key=${this.apiKey}&q=${this.cityName}`;
+      const url = `https://api.weatherapi.com/v1/current.json?key=${this.apiKey}&q=${this.cityName}`;
       axios
         .get(url)
         .then((response) => {
