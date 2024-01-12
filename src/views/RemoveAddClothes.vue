@@ -211,7 +211,7 @@ export default {
     },
     deleteClothes() {
       axios.delete(
-        `${process.env.VUE_APP_BACKEND_BASE_URL}/${this.selectedClothesId}`
+        `${process.env.VUE_APP_BACKEND_BASE_URL}/clothes/${this.selectedClothesId}`
           .then(() => {
             this.fetchSavedClothes(); // Refresh the list
             this.showDeletePopup = false;
@@ -231,7 +231,7 @@ export default {
     saveDescription() {
       axios
         .put(
-          `${process.env.VUE_APP_BACKEND_BASE_URL}/${this.selectedClothesId}`,
+          `${process.env.VUE_APP_BACKEND_BASE_URL}/clothes/${this.selectedClothesId}`,
           this.editableClothes
         )
         .then((response) => {
