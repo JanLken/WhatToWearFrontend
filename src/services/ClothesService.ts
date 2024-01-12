@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const CLOTHES_API_BASE_URL = "http://localhost:8080/clothes";
+const CLOTHES_API_BASE_URL = `${process.env.VUE_APP_BACKEND_BASE_URL}/clothes`;
 
 class ClothesService {
   getClothes() {
