@@ -31,9 +31,7 @@
       />
       <button type="submit">Add Clothes</button>
     </form>
-
     <p v-if="feedback" :class="{ error: isError }">{{ feedback }}</p>
-
     <!-- Table of Saved Clothes -->
     <div class="container">
       <table class="table table-striped">
@@ -143,10 +141,7 @@ export default {
     addClothes() {
       if (this.validateInput()) {
         axios
-          .post(
-            "https://whattowear-backend.onrender.com/clothes",
-            this.newClothes
-          )
+          .post(process.env.VUE_APP_BACKEND_BASE_URL, this.newClothes)
           .then((response) => {
             this.feedback = "Clothes added successfully!";
             this.isError = false;
@@ -199,7 +194,7 @@ export default {
     },
     fetchSavedClothes() {
       axios
-        .get("https://whattowear-backend.onrender.com/clothes")
+        .get(process.env.VUE_APP_BACKEND_BASE_URL)
         .then((response) => {
           this.savedClothes = response.data;
         })
@@ -208,25 +203,26 @@ export default {
           // Handle error
         });
     },
+
     confirmRemoval(id) {
       this.selectedClothesId = id;
       this.showDeletePopup = true;
       this.showEditPopup = false;
     },
     deleteClothes() {
-      axios
-        .delete(
-          `https://whattowear-backend.onrender.com/clothes/${this.selectedClothesId}`
-        )
-        .then(() => {
-          this.fetchSavedClothes(); // Refresh the list
-          this.showDeletePopup = false;
-        })
-        .catch((error) => {
-          console.error(error);
-          // Handle error
-        });
+      axios.delete(
+        `${process.env.VUE_APP_BACKEND_BASE_URL}/${this.selectedClothesId}`
+          .then(() => {
+            this.fetchSavedClothes(); // Refresh the list
+            this.showDeletePopup = false;
+          })
+          .catch((error) => {
+            console.error(error);
+            // Handle error
+          })
+      );
     },
+
     editClothes(clothes) {
       this.editableClothes = JSON.parse(JSON.stringify(clothes));
       this.showEditPopup = true;
@@ -235,7 +231,7 @@ export default {
     saveDescription() {
       axios
         .put(
-          `https://whattowear-backend.onrender.com/clothes/${this.editableClothes.id}`,
+          `${process.env.VUE_APP_BACKEND_BASE_URL}/${this.selectedClothesId}`,
           this.editableClothes
         )
         .then((response) => {
@@ -306,7 +302,7 @@ export default {
         let compareB = b[this.sortKey];
 
         if (compareA < compareB) return -1 * this.sortOrder;
-        if (compareA > compareB) return 1 * this.sortOrder;
+        if (compareA > compareB) return this.sortOrder;
         return 0;
       });
 

@@ -2,7 +2,7 @@
 
 import axios from "axios";
 
-const CLOTHES_API_BASE_URL = "https://whattowear-backend.onrender.com//clothes";
+const CLOTHES_API_BASE_URL = "http://localhost:8080/clothes";
 
 class ClothesService {
   getClothes() {
