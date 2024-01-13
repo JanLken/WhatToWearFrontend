@@ -7,10 +7,10 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-// You no longer need to import these components here, as the router will handle their rendering
+
 @Options({
   components: {
-    // Your components are now handled by the router
+
   },
 })
 export default class App extends Vue {}
