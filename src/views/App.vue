@@ -14,5 +14,13 @@ export default class App extends Vue {}
 </script>
 
 <style lang="scss">
-/* Your existing styles */
+body {
+  background-color: powderblue;
+}
+h1 {
+  color: blue;
+}
+p {
+  color: red;
+}
 </style>
