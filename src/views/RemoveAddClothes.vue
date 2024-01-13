@@ -141,7 +141,7 @@ export default {
     addClothes() {
       if (this.validateInput()) {
         axios
-          .post(process.env.VUE_APP_BACKEND_BASE_URL, this.newClothes)
+          .post(`${process.env.VUE_APP_BACKEND_BASE_URL}`, this.newClothes)
           .then((response) => {
             this.feedback = "Clothes added successfully!";
             this.isError = false;
@@ -210,28 +210,30 @@ export default {
       this.showEditPopup = false;
     },
     deleteClothes() {
-      axios.delete(
-        `${process.env.VUE_APP_BACKEND_BASE_URL}/clothes/${this.selectedClothesId}`
-          .then(() => {
-            this.fetchSavedClothes(); // Refresh the list
-            this.showDeletePopup = false;
-          })
-          .catch((error) => {
-            console.error(error);
-            // Handle error
-          })
-      );
+      axios
+        .delete(
+          `${process.env.VUE_APP_BACKEND_BASE_URL}/${this.selectedClothesId}`
+        )
+        .then(() => {
+          this.fetchSavedClothes(); // Refresh the list
+          this.showDeletePopup = false;
+        })
+        .catch((error) => {
+          console.error(error);
+          // Handle error
+        });
     },
 
     editClothes(clothes) {
       this.editableClothes = JSON.parse(JSON.stringify(clothes));
+      this.selectedClothesId = clothes.id;
       this.showEditPopup = true;
       this.showDeletePopup = false;
     },
     saveDescription() {
       axios
         .put(
-          `${process.env.VUE_APP_BACKEND_BASE_URL}/clothes/${this.selectedClothesId}`,
+          `${process.env.VUE_APP_BACKEND_BASE_URL}/${this.selectedClothesId}`,
           this.editableClothes
         )
         .then((response) => {
