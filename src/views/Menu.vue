@@ -4,7 +4,7 @@
     <button @click="navigateTo('/what-can-i-wear')">What can I wear?</button>
     <button @click="navigateTo('/RemoveAddClothes')">Change closet</button>
     <button @click="navigateTo('/settings')">Settings</button>
-    <button @click="navigateTo('/logout')">Logout</button>
+    <button @click="logout">Logout</button>
   </div>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   methods: {
     goToMenu() {
       this.$router.push("/");
+    },
+    Logout() {
+      this.$auth.signOut().then(() => {
+        this.$router.replace("/login");
+      });
     },
   },
   // eslint-disable-next-line vue/multi-word-component-names
