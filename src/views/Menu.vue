@@ -2,9 +2,7 @@
   <h1 class="center-container">~What To Wear~</h1>
   <div class="menu-container">
     <button @click="navigateTo('/what-can-i-wear')">What can I wear?</button>
-    <button @click="navigateTo('/RemoveAddClothes')">
-      Remove or add new Clothes
-    </button>
+    <button @click="navigateTo('/RemoveAddClothes')">Change closet</button>
     <button @click="navigateTo('/settings')">Settings</button>
     <button @click="navigateTo('/logout')">Logout</button>
   </div>
@@ -38,9 +36,21 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 20px;
 }
 
 .menu-container button {
   margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: whitesmoke;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 1s;
+}
+
+.menu-container button:hover {
+  background-color: #0056b3;
 }
 </style>

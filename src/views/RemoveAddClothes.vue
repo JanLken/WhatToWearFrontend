@@ -37,55 +37,55 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>Clothes ID<button @click="sort('id')">Sort by ID</button></th>
-            <th>
-              Clothes Category
-              <select
-                v-model="categoryFilter"
-                @change="resetFilters('category')"
-              >
-                <option value="">All Categories</option>
-                <option value="Jacket">Jacket</option>
-                <option value="T-Shirt">T-Shirt</option>
-                <option value="Long sleeve shirt">Long sleeve shirt</option>
-                <option value="Pants">Pants</option>
-                <option value="Shorts">Shorts</option>
-                <option value="Shoes">Shoes</option>
-              </select>
-            </th>
-            <th>
-              Min Temp<button @click="sort('minTemp')">Sort by Min Temp</button>
-            </th>
-            <th>
-              Max Temp<button @click="sort('maxTemp')">Sort by Max Temp</button>
-            </th>
-            <th>
-              Description
-              <input
-                v-model="descriptionFilter"
-                placeholder="Filter by Description"
-              />
+            <th
+              v-for="field in tableFields"
+              :key="field.key"
+              @click="sort(field.key)"
+            >
+              {{ field.label }}
+              <span v-if="field.sortable && sortKey === field.key">{{
+                sortOrder === 1 ? "↓" : "↑"
+              }}</span>
+              <span v-if="field.key === 'category'">
+                <select v-model="categoryFilter">
+                  <option value="">All Categories</option>
+                  <option
+                    v-for="category in categories"
+                    :key="category"
+                    :value="category"
+                  >
+                    {{ category }}
+                  </option>
+                </select>
+              </span>
+              <span v-if="field.key === 'description'">
+                <input
+                  v-model="descriptionFilter"
+                  placeholder="Filter Description"
+                />
+              </span>
             </th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="clothes in filteredClothes" :key="clothes.id">
-            <td>{{ clothes.id }}</td>
-            <td>{{ clothes.category }}</td>
-            <td>{{ clothes.minTemp }}</td>
-            <td>{{ clothes.maxTemp }}</td>
-            <td>{{ clothes.description }}</td>
-            <td>
-              <button @click="confirmRemoval(clothes.id)">Remove</button>
+            <td v-for="field in tableFields" :key="field.key">
+              {{ clothes[field.key] }}
             </td>
             <td>
-              <button @click="editClothes(clothes)">Edit</button>
+              <button @click="confirmRemoval(clothes.id)" class="small-button">
+                Remove
+              </button>
+              <button @click="editClothes(clothes)" class="small-button">
+                Edit
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
     <!-- Confirmation Popup -->
     <div v-if="showDeletePopup" class="popup">
       <p>Are you sure you want to delete this clothing item?</p>
@@ -112,6 +112,14 @@ export default {
         maxTemp: null,
         description: "",
       },
+      categories: [
+        "Jacket",
+        "T-Shirt",
+        "Long sleeve shirt",
+        "Pants",
+        "Shorts",
+        "Shoes",
+      ],
       sortKey: "id",
       sortOrder: 1, // 1 for ascending, -1 for descending
       categoryFilter: "",
@@ -123,16 +131,26 @@ export default {
       showEditPopup: false,
       feedback: "",
       isError: false,
+
+      tableFields: [
+        { key: "id", label: "Clothes ID", sortable: true },
+        { key: "category", label: "Clothes Category", sortable: true },
+        { key: "minTemp", label: "Min Temp", sortable: true },
+        { key: "maxTemp", label: "Max Temp", sortable: true },
+        { key: "description", label: "Description", sortable: false },
+      ],
     };
   },
   methods: {
     sort(key) {
+      const field = this.tableFields.find((f) => f.key === key);
+      if (!field || !field.sortable) return;
+
       if (this.sortKey === key) {
-        // Toggle sort order
         this.sortOrder *= -1;
       } else {
         this.sortKey = key;
-        this.sortOrder = 1; // Default to ascending
+        this.sortOrder = 1;
       }
     },
     goToMenu() {
@@ -303,8 +321,11 @@ export default {
         let compareA = a[this.sortKey];
         let compareB = b[this.sortKey];
 
+        if (typeof compareA === "number" && typeof compareB === "number") {
+          return (compareA - compareB) * this.sortOrder;
+        }
         if (compareA < compareB) return -1 * this.sortOrder;
-        if (compareA > compareB) return this.sortOrder;
+        if (compareA > compareB) return 1 * this.sortOrder;
         return 0;
       });
 
@@ -330,8 +351,68 @@ export default {
   padding: 20px;
   border: 1px solid #ccc;
   z-index: 1000;
+  /* Add more styles for popup */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
-.error {
-  color: red;
+.popup button {
+  padding: 5px 8px; /* Smaller padding */
+  font-size: 0.8em; /* Adjust font size if needed */
+  border-radius: 15px; /* Increased border-radius for rounder appearance */
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-right: 3px;
+}
+
+.popup button:hover {
+  background-color: #0056b3;
+}
+
+table button {
+  padding: 5px 10px; /* Smaller padding */
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+/* Add styles for form and table */
+form {
+  margin: 20px auto;
+  width: 60%;
+}
+
+form input,
+form select,
+form button {
+  margin-top: 10px;
+  padding: 10px;
+  width: 20%;
+  box-sizing: border-box;
+  margin-right: 10px;
+}
+table .small-button {
+  padding: 3px 6px; /* Reduced padding for smaller size */
+  font-size: 0.8em; /* Smaller font size */
+  width: 60px;
+  margin-right: 10px;
+}
+table {
+  table-layout: fixed;
+  margin: 20px auto;
+  width: 80%;
+}
+
+table,
+th,
+td {
+  border-collapse: collapse;
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
 }
 </style>
