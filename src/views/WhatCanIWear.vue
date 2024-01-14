@@ -47,13 +47,22 @@ export default {
       cityName: "", // For user input of the city name
       apiKey: process.env.VUE_APP_API_KEY,
       randomOutfit: [],
-      degreesOutside: 0,
       showError: false,
     };
   },
   methods: {
     goToMenu() {
       this.$router.push("/");
+    },
+    fetchClothes() {
+      axios
+        .get(process.env.VUE_APP_BACKEND_BASE_URL)
+        .then((response) => {
+          this.clothes = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching clothes:", error);
+        });
     },
     fetchTemperature() {
       if (!this.cityName) {
@@ -75,51 +84,45 @@ export default {
           this.showError = true;
         });
     },
-
-    fetchClothes() {
-      axios
-        .get(process.env.VUE_APP_BACKEND_BASE_URL)
-        .then((response) => {
-          this.clothes = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching clothes:", error);
-        });
-    },
-    generateRandomOutfit() {
+    async generateRandomOutfit() {
       this.showError = false;
 
       const categoryGroups = [
-        ["Pants", "Shorts"], // Either pants or shorts
-        ["T-Shirt", "Long sleeve shirt"], // Either T-shirt or long sleeve shirt
+        ["Pants", "Shorts"],
+        ["T-Shirt", "Long sleeve shirt"],
         ["Shoes"],
         ["Jacket"],
       ];
 
-      let filteredClothes = categoryGroups
-        .map((group) => {
-          let items = group
-            .map((category) =>
-              this.clothes.filter(
-                (item) =>
-                  item.category === category &&
-                  item.minTemp <= this.degreesOutside &&
-                  item.maxTemp >= this.degreesOutside
-              )
-            )
-            .flat();
+      let outfitsPromises = categoryGroups.map((group) => {
+        let url = `${process.env.VUE_APP_BACKEND_BASE_URL}/filter?minTemp=${
+          this.currentTemperature
+        }&maxTemp=${this.currentTemperature}&categories=${group.join(",")}`;
+        return axios.get(url);
+      });
 
-          if (items.length === 0) return null;
-          return items[Math.floor(Math.random() * items.length)];
-        })
-        .filter((item) => item !== null);
+      try {
+        let responses = await Promise.all(outfitsPromises);
+        this.randomOutfit = responses
+          .map((response) => {
+            let items = response.data;
+            return items.length
+              ? items[Math.floor(Math.random() * items.length)]
+              : null;
+          })
+          .filter((item) => item !== null);
 
-      if (filteredClothes.length !== categoryGroups.length) {
-        this.feedback = "Not enough clothing items available for this weather";
-        this.randomOutfit = [];
-      } else {
-        this.feedback = "";
-        this.randomOutfit = filteredClothes;
+        if (this.randomOutfit.length !== categoryGroups.length) {
+          this.feedback =
+            "Not enough clothing items available for this weather";
+          this.randomOutfit = [];
+        } else {
+          this.feedback = "";
+        }
+      } catch (error) {
+        console.error("Error generating outfit:", error);
+        this.feedback = "Failed to generate outfit.";
+        this.showError = true;
       }
     },
   },
